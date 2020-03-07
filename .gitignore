@@ -21,3 +21,17 @@ temp/level.dat_old
 temp/levelname.txt
 temp/world_icon.jpeg
 ~$DoomReadyToPrint.xlsx
+build/modelProcessor/xref-modelProcessor.html
+build/modelProcessor/warn-modelProcessor.txt
+build/modelProcessor/Tree-01.toc
+build/modelProcessor/Tree-00.toc
+build/modelProcessor/PYZ-00.toc
+build/modelProcessor/PYZ-00.pyz
+build/modelProcessor/PKG-00.pkg
+build/modelProcessor/modelProcessor.exe.manifest
+build/modelProcessor/base_library.zip
+build/modelProcessor/Analysis-00.toc
+__pycache__/modelProcessor.cpython-37.pyc
+build/modelProcessor/EXE-00.toc
+build/modelProcessor/PKG-00.toc
+dist/modelProcessor.exe

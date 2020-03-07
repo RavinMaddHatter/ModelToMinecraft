@@ -21,6 +21,8 @@ root = Tk()
 root.title("Madhatter's Minecraft Model Maker")
 FileGUI=StringVar()
 FileGUI.set("normandy.obj")
+BaseGUI=StringVar()
+BaseGUI.set("Base World.mcworld")
 sizeGui=IntVar()
 sizeGui.set(desiredSize)
 startHGui=IntVar()
@@ -34,9 +36,9 @@ outputGui=StringVar()
 outputGui.set("")
 
 def browseObj():
-    FileGUI.set(filedialog.askopenfilename(filetypes = (("Template files", "*.stl"), )))
-
-
+    FileGUI.set(filedialog.askopenfilename(filetypes = (("Template files", ".stl .STL .obj"), )))
+def browseBase():
+    BaseGUI.set(filedialog.askopenfilename(filetypes = (("Template files", "*.mcworld"), )))
 def run():
     outputGui.set("starting")
     fileName=FileGUI.get()
@@ -44,7 +46,7 @@ def run():
     desiredSize=sizeGui.get()
     buildCenterX
     buildCenterY
-    templateWorld='Base World.mcworld'
+    templateWorld=BaseGUI.get()
     ## setup parameters
     outputFileName=fileName.replace(".STL","").replace(".stl","").replace(".obj","").replace(".OBJ","")
     path_to_save="temp"
@@ -127,9 +129,14 @@ def runThread():
     x.start()
 
 runbutton=Button(root, text="Make My world",command=runThread)
-getFileButton=Button(root, text="Browse",command=browseObj)
+getFileButton=Button(root, text="Browse model",command=browseObj)
+getBaseButton=Button(root, text="Browse Base",command=browseBase)
+
 fileLB=Label(root, text="3D file")
+BaseLB=Label(root, text="Minecraft World")
 fileEntry = Entry(root,textvariable=FileGUI)
+BaseEntry = Entry(root,textvariable=BaseGUI)
+
 maxSizeLB=Label(root, text="Max Size in Blocks (750 max)")
 maxDimEntry = Entry(root,textvariable=sizeGui)
 
@@ -145,7 +152,11 @@ r=0
 fileLB.grid(row=r,column=0)
 fileEntry.grid(row=r,column=1)
 getFileButton.grid(row=r,column=2)
+r+=1
+BaseEntry.grid(row=r,column=1)
+BaseLB.grid(row=r,column=0)
 
+getBaseButton.grid(row=r,column=2)
 r+=1
 maxSizeLB.grid(row=r,column=0)
 maxDimEntry.grid(row=r,column=1)
