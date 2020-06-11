@@ -35,3 +35,5 @@ __pycache__/modelProcessor.cpython-37.pyc
 build/modelProcessor/EXE-00.toc
 build/modelProcessor/PKG-00.toc
 dist/modelProcessor.exe
+*.spec
+*.spec
