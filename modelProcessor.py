@@ -1,26 +1,25 @@
 import trimesh
 import numpy
-from stl import mesh
 import bedrock
 import os
 import shutil
 from openpyxl import Workbook
 from zipfile import ZipFile 
-from tkinter import *
+from tkinter import DoubleVar,StringVar,IntVar, Label, Entry, Tk, Button
 from tkinter import filedialog
 import threading
+from trimesh.transformations import euler_matrix
 
 
 
-fileName='DoomReadyToPrint.STL'
-YOffset=5
-desiredSize=150
+YOffset=4
+desiredSize=50
 buildCenterX=0
 buildCenterY=0
 root = Tk()
 root.title("Madhatter's Minecraft Model Maker")
 FileGUI=StringVar()
-FileGUI.set("normandy.obj")
+FileGUI.set("creeper.stl")
 BaseGUI=StringVar()
 BaseGUI.set("Base World.mcworld")
 sizeGui=IntVar()
@@ -32,11 +31,18 @@ buildCenterXGui.set(0)
 buildCenterYGui=IntVar()
 buildCenterYGui.set(0)
 
+rotXGui=DoubleVar()
+rotYGui=DoubleVar()
+rotZGui=DoubleVar()
+rotXGui.set(0)
+rotYGui.set(0)
+rotZGui.set(0)
+
 outputGui=StringVar()
 outputGui.set("")
 
 def browseObj():
-    FileGUI.set(filedialog.askopenfilename(filetypes = (("Template files", ".stl .STL .obj"), )))
+    FileGUI.set(filedialog.askopenfilename(filetypes = (("3D Model", "*.stl *.STL"), )))
 def browseBase():
     BaseGUI.set(filedialog.askopenfilename(filetypes = (("Template files", "*.mcworld"), )))
 def run():
@@ -44,8 +50,10 @@ def run():
     fileName=FileGUI.get()
     YOffset=startHGui.get()
     desiredSize=sizeGui.get()
-    buildCenterX
-    buildCenterY
+    buildCenterX=buildCenterXGui.get()
+    print(buildCenterX)
+    buildCenterY=buildCenterYGui.get()
+    print(buildCenterY)
     templateWorld=BaseGUI.get()
     ## setup parameters
     outputFileName=fileName.replace(".STL","").replace(".stl","").replace(".obj","").replace(".OBJ","")
@@ -53,11 +61,17 @@ def run():
     blocks=0
     solidBlocks=0
     wb = Workbook()
-
+    xrot=rotXGui.get()
+    yrot=rotYGui.get()
+    zrot=rotZGui.get()
 
     ##Make import mesh and turn it into a big
     m = trimesh.load(fileName) #import a mesh
+    HTM=a=euler_matrix(xrot*numpy.pi/180,yrot*numpy.pi/180,zrot*numpy.pi/180)
+    m.apply_transform(HTM)
+    
     v=m.voxelized(pitch=1)#voxelize a mesh with a simple scale
+    
     
     outputGui.set("sizing...")
     biggest=max(v.matrix.shape)#get biggest dimension
@@ -99,7 +113,7 @@ def run():
                     if outV[x][y][z]:
                         blocks+=1
                         world.setBlock(x-round(dims[0]/2), z+YOffset, y-round(dims[2]/2), selectedBlock)
-                        ws1.cell(row=x+1,column=y+1).value=str(x-round(dims[0]/2+buildCenterX))+"/"+str(y-round(dims[2]/2+buildCenterY))
+                        ws1.cell(row=y+1,column=x+1).value=str(-x+round(dims[0]/2)+buildCenterX)+"/"+str(-y+round(dims[2]/2)+buildCenterY)
                     if v.matrix[x][y][z]:
                         solidBlocks+=1
         world.save()
@@ -121,7 +135,7 @@ def run():
     ##pack up world 
     shutil.move(os.path.join(os.getcwd(),outputFileName+".mcworld"),os.path.join(startDir,outputFileName+".mcworld"))
     #print blocks required.
-    outputGui.set("numblocks:%d num stacks:%d num shulkers:%d"%(blocks,blocks/64,blocks/64/27))
+    outputGui.set("numblocks:%d num stacks:%f num shulkers:%f"%(blocks,blocks/64,blocks/64/27))
 
 
 def runThread():
@@ -140,11 +154,18 @@ BaseEntry = Entry(root,textvariable=BaseGUI)
 maxSizeLB=Label(root, text="Max Size in Blocks (750 max)")
 maxDimEntry = Entry(root,textvariable=sizeGui)
 
-BuildXLB=Label(root, text="Build Center X (for excel)")
+BuildXLB=Label(root, text="Build Center X (for excel only)")
 BuildXEntry = Entry(root,textvariable=buildCenterXGui)
-BuildYLB=Label(root, text="Build Center Z (for excel)")
+BuildYLB=Label(root, text="Build Center Z (for excel only)")
 BuildYEntry = Entry(root,textvariable=buildCenterYGui)
 OutputEntry = Entry(root,textvariable=outputGui,width=44)
+
+rotXLabel=Label(root, text="Rotation About the X Axis")
+rotYLabel=Label(root, text="Rotation About the Y Axis")
+rotZLabel=Label(root, text="Rotation About the Z Axis")
+rotXEntry = Entry(root,textvariable=rotXGui)
+rotYEntry = Entry(root,textvariable=rotYGui)
+rotZEntry = Entry(root,textvariable=rotZGui)
 
 HeightOffGround= Entry(root,textvariable=startHGui)
 HeightOffGroundLB=Label(root, text="Starting Y Level")
@@ -163,6 +184,15 @@ maxDimEntry.grid(row=r,column=1)
 r+=1
 HeightOffGround.grid(row=r,column=1)
 HeightOffGroundLB.grid(row=r,column=0)
+r+=1
+rotXLabel.grid(row=r,column=0)
+rotXEntry.grid(row=r,column=1)
+r+=1
+rotYLabel.grid(row=r,column=0)
+rotYEntry.grid(row=r,column=1)
+r+=1
+rotZLabel.grid(row=r,column=0)
+rotZEntry.grid(row=r,column=1)
 r+=1
 BuildXEntry.grid(row=r,column=1)
 BuildXLB.grid(row=r,column=0)
