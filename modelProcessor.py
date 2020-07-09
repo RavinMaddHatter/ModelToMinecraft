@@ -99,7 +99,7 @@ def run():
     outputGui.set("hollowing the model")
     ##Processing the world to make it hollow and put the excel sheet together
     with bedrock.World(path_to_save) as world:
-        selectedBlock = bedrock.Block("minecraft:stone")
+        selectedBlock = bedrock.Block("minecraft:smooth_stone")
         for z in range(dims[2]):
             ws1 = wb.create_sheet("Y layer " +str(z+YOffset))
             for y in range(dims[1]):

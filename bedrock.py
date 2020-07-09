@@ -173,6 +173,16 @@ class Chunk:
 
   def __repr__(self):
     return "Chunk {} {}: {} subchunks".format(self.x, self.z, len(self.subchunks))
+  def checkChunk(self,db,x,y,z):
+    
+    key = struct.pack("<iicB", x, z, b'/', y)
+    try:
+      data = ldb.get(db, key)
+      chunkGood=True
+    except:
+      chunkGood=False
+    return chunkGood
+      
 
 # Handles the blocks and block palette format.
 class SubChunk:
