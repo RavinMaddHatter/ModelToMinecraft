@@ -1,6 +1,6 @@
 import trimesh
 import numpy
-import bedrock
+from bedrock import bedrock
 import os
 import shutil
 from openpyxl import Workbook
@@ -10,8 +10,8 @@ from tkinter import filedialog
 import threading
 import LevelDatNbt as worldNBT
 from trimesh.transformations import euler_matrix
-
-
+import time
+import ntpath
 
 YOffset=4
 desiredSize=50
@@ -118,11 +118,12 @@ def run():
                     if v.matrix[x][y][z]:
                         solidBlocks+=1
         world.save()
-    with nbtWorld.BedrockLevelFile.load(os.path.join(path_to_save,"level.dat")) as lvlNBT:
-        lvlDat["LastPlayed"]=time.time()
-        lvlDat["LevelName"]=outputFileName
+        
+    with worldNBT.BedrockLevelFile.load(os.path.join(path_to_save,"level.dat")) as lvlNBT:
+        lvlNBT["LastPlayed"]=time.time()
+        lvlNBT["LevelName"]=ntpath.basename(outputFileName)
     wb.save(filename = outputFileName+'.xlsx')
-    
+    wb.close()
     outputGui.set("saving")
 
     #Clean up temp files

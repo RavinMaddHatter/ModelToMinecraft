@@ -1,5 +1,3 @@
-import sys
-sys.setrecursionlimit(5000)
 # -*- mode: python ; coding: utf-8 -*-
 
 block_cipher = None
@@ -7,8 +5,8 @@ block_cipher = None
 
 a = Analysis(['modelProcessor.py'],
              pathex=['C:\\Users\\camer\\OneDrive\\Documents\\GitHub\\ModelToMinecraft'],
-             binaries=[('C:\\Users\\camer\\Anaconda3\\Lib\\site-packages\\trimesh\\*','.dll')],
-             datas=[('LevelDB-MCPE-64.dll', '.')],
+             binaries=[],
+             datas=[],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
