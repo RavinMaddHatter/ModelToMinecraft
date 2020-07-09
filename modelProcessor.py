@@ -8,6 +8,7 @@ from zipfile import ZipFile
 from tkinter import DoubleVar,StringVar,IntVar, Label, Entry, Tk, Button
 from tkinter import filedialog
 import threading
+import LevelDatNbt as worldNBT
 from trimesh.transformations import euler_matrix
 
 
@@ -99,7 +100,7 @@ def run():
     outputGui.set("hollowing the model")
     ##Processing the world to make it hollow and put the excel sheet together
     with bedrock.World(path_to_save) as world:
-        selectedBlock = bedrock.Block("minecraft:stone")
+        selectedBlock = bedrock.Block("minecraft:smooth_stone")
         for z in range(dims[2]):
             ws1 = wb.create_sheet("Y layer " +str(z+YOffset))
             for y in range(dims[1]):
@@ -117,6 +118,9 @@ def run():
                     if v.matrix[x][y][z]:
                         solidBlocks+=1
         world.save()
+    with nbtWorld.BedrockLevelFile.load(os.path.join(path_to_save,"level.dat")) as lvlNBT:
+        lvlDat["LastPlayed"]=time.time()
+        lvlDat["LevelName"]=outputFileName
     wb.save(filename = outputFileName+'.xlsx')
     
     outputGui.set("saving")

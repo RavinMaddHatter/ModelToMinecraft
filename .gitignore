@@ -37,3 +37,4 @@ build/modelProcessor/PKG-00.toc
 dist/modelProcessor.exe
 *.spec
 *.spec
+*.pyc
