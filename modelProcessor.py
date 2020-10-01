@@ -1,6 +1,6 @@
 import trimesh
 import numpy
-from bedrock import bedrock
+import bedrock
 import os
 import shutil
 from openpyxl import Workbook
