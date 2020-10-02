@@ -7,8 +7,8 @@ block_cipher = None
 
 a = Analysis(['modelProcessor.py'],
              pathex=['C:\\Users\\camer\\OneDrive\\Documents\\GitHub\\ModelToMinecraft'],
-             binaries=[('C:\\Users\\camer\\Anaconda3\\Lib\\site-packages\\trimesh\\*','.dll')],
-             datas=[('LevelDB-MCPE-64.dll', '.')],
+             binaries=[('C:\\Users\\camer\\Anaconda3\\Lib\\site-packages\\trimesh\\*','.dll'),('LevelDB-MCPE-64.dll', '.')],
+             datas=[('*', '.dll')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
