@@ -38,3 +38,17 @@ dist/modelProcessor.exe
 *.spec
 *.spec
 *.pyc
+dist/temp/db/000032.ldb
+dist/temp/db/000038.log
+dist/temp/db/000039.ldb
+dist/temp/db/CURRENT
+dist/temp/db/LOCK
+dist/temp/db/LOG
+dist/temp/db/MANIFEST-000036
+dist/temp/level.dat
+dist/temp/level.dat_old
+dist/temp/levelname.txt
+dist/temp/world_icon.jpeg
+modelProcessorback.spec
+temp/db/000039.ldb
+temp/db/MANIFEST-000036
