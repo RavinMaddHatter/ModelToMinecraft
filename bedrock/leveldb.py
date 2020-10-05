@@ -3,7 +3,7 @@
 import ctypes
 import os.path as op
 import sys
-
+ctypes.windll.kernel32.SetDllDirectoryW(None)
 if sys.platform == "win32":
   if sys.maxsize > 2**32: # 64 bit python
     ldb = ctypes.cdll.LoadLibrary(op.join(op.dirname(op.realpath(__file__)), "LevelDB-MCPE-64.dll"))

@@ -1,13 +1,12 @@
 # -*- mode: python ; coding: utf-8 -*-
-import sys
-sys.setrecursionlimit(5000)
+
 block_cipher = None
 
 
 a = Analysis(['modelProcessor.py'],
              pathex=['C:\\Users\\camer\\OneDrive\\Documents\\GitHub\\ModelToMinecraft'],
-             binaries=[],
-             datas=[],
+             binaries=[('C:\\Users\\camer\\OneDrive\\Documents\\GitHub\\ModelToMinecraft\\bedrock\\LevelDB-MCPE-64.dll', '.')],
+             datas=[('C:\\Users\\camer\\OneDrive\\Documents\\GitHub\\ModelToMinecraft\\bedrock\\LevelDB-MCPE-64.dll', '.')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
