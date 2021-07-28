@@ -1,6 +1,7 @@
 import trimesh
 import numpy
-from bedrock import bedrock
+import amulet
+from amulet.api.block import Block
 import os
 import shutil
 from openpyxl import Workbook
@@ -70,12 +71,8 @@ def run():
     m = trimesh.load(fileName) #import a mesh
     HTM=a=euler_matrix(xrot*numpy.pi/180,yrot*numpy.pi/180,zrot*numpy.pi/180)
     m.apply_transform(HTM)
-    
-    v=m.voxelized(pitch=1)#voxelize a mesh with a simple scale
-    
-    
+    biggest=max(m.bounding_box.primitive.extents)
     outputGui.set("sizing...")
-    biggest=max(v.matrix.shape)#get biggest dimension
     v=m.voxelized(pitch=biggest/desiredSize)#scale to match biggest dimension.
     dims=v.matrix.shape
     outV=v.matrix.copy()
@@ -99,25 +96,35 @@ def run():
     
     outputGui.set("hollowing the model")
     ##Processing the world to make it hollow and put the excel sheet together
-    with bedrock.World(path_to_save) as world:
-        selectedBlock = bedrock.Block("minecraft:smooth_stone")
-        for z in range(dims[2]):
-            ws1 = wb.create_sheet("Y layer " +str(z+YOffset))
-            for y in range(dims[1]):
-                for x in range(dims[0]):
-                    if x>0 and y>0 and z>0:
-                        if x+1<dims[0] and y+1<dims[1] and z+1<dims[2]:
-                            if v.matrix[x+1][y][z] and v.matrix[x-1][y][z]:
-                                if v.matrix[x][y+1][z] and v.matrix[x][y-1][z]:
-                                    if v.matrix[x][y][z+1] and v.matrix[x][y][z-1]:
-                                        outV[x][y][z]=False
-                    if outV[x][y][z]:
-                        blocks+=1
-                        world.setBlock(x-round(dims[0]/2), z+YOffset, y-round(dims[2]/2), selectedBlock)
-                        ws1.cell(row=y+1,column=x+1).value=str(-x+round(dims[0]/2)+buildCenterX)+"/"+str(-y+round(dims[2]/2)+buildCenterY)
-                    if v.matrix[x][y][z]:
-                        solidBlocks+=1
-        world.save()
+    world = amulet.load_level(path_to_save)
+    selectedBlock = Block("minecraft", "smooth_stone")
+    game_version = ("bedrock", (1, 16, 210))  # the version that we want the block data in.
+    
+    for z in range(dims[2]):
+        ws1 = wb.create_sheet("Y layer " +str(z+YOffset))
+        for y in range(dims[1]):
+            for x in range(dims[0]):
+                if x>0 and y>0 and z>0:
+                    if x+1<dims[0] and y+1<dims[1] and z+1<dims[2]:
+                        if v.matrix[x+1][y][z] and v.matrix[x-1][y][z]:
+                            if v.matrix[x][y+1][z] and v.matrix[x][y-1][z]:
+                                if v.matrix[x][y][z+1] and v.matrix[x][y][z-1]:
+                                    outV[x][y][z]=False
+                if outV[x][y][z]:
+                    blocks+=1
+                    world.set_version_block(
+                        x-round(dims[0]/2),  # x location
+                        z+YOffset,  # y location
+                        y-round(dims[2]/2),  # z location
+                        "minecraft:overworld",  # dimension
+                        game_version,
+                        selectedBlock,
+                        )
+                    ws1.cell(row=y+1,column=x+1).value=str(-x+round(dims[0]/2)+buildCenterX)+"/"+str(-y+round(dims[2]/2)+buildCenterY)
+                if v.matrix[x][y][z]:
+                    solidBlocks+=1
+    world.save()
+    world.close()
         
     with worldNBT.BedrockLevelFile.load(os.path.join(path_to_save,"level.dat")) as lvlNBT:
         lvlNBT["LastPlayed"]=time.time()
@@ -156,7 +163,7 @@ BaseLB=Label(root, text="Minecraft World")
 fileEntry = Entry(root,textvariable=FileGUI)
 BaseEntry = Entry(root,textvariable=BaseGUI)
 
-maxSizeLB=Label(root, text="Max Size in Blocks (750 max)")
+maxSizeLB=Label(root, text="Max Size in Blocks")
 maxDimEntry = Entry(root,textvariable=sizeGui)
 
 BuildXLB=Label(root, text="Build Center X (for excel only)")
